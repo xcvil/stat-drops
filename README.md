@@ -1,3 +1,43 @@
+## Project Structure
+
+```shell script
+stat-drops/
+├── stat-drops/
+│   ├── core/
+│   |   ├── __init__.py
+│   |   ├── common.py
+│   |   ├── db_opts.py
+│   |   ├── machine.py
+│   |   ├── model.py
+│   |   ├── np_opts.py
+|   |   └── utils.py
+│   ├── __init__.py
+│   └── main.py
+├── data/
+├── LICENSE
+└── README.md
+```
+
+## Module Codebase
+
+### core.model
+
+
+
+
+### core.common
+**Statistical measures**
+
+core.common.kl_divergence 
+* to calculate Kullback–Leibler divergence given expected and observed counts of drops for each diameter class
+* probability is given by counts/total amount (of drops)
+
+core.common.expectation_gamma
+* to calculate the expectation of a gamma distribution
+
+pearson_chi_square
+* to calculate chi square
+
 ## Data generated from TBA database
 
 * File format: .npy
