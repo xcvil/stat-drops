@@ -3,16 +3,14 @@
 ```shell script
 stat-drops/
 ├── stat-drops/
-│   ├── core/
-│   |   ├── __init__.py
-│   |   ├── common.py
-│   |   ├── db_opts.py
-│   |   ├── machine.py
-│   |   ├── model.py
-│   |   ├── np_opts.py
-|   |   └── utils.py
 │   ├── __init__.py
-│   └── main.py
+│   ├── common.py
+│   ├── dbopts.py
+│   ├── machine.py
+│   ├── model.py
+│   ├── npopts.py
+|   ├── utils.py
+│   └── __init__.py
 ├── data/
 ├── LICENSE
 └── README.md
