@@ -1,6 +1,6 @@
 ## Project Structure
 
-```shell script
+```shell
 stat-drops/
 ├── stat-drops/
 │   ├── __init__.py
@@ -14,6 +14,17 @@ stat-drops/
 ├── data/
 ├── LICENSE
 └── README.md
+```
+
+## Installation 
+#### Step 1
+```shell
+git clone https://github.com/xcvil/stat-drops.git
+```
+#### step 2 
+Install via pip
+```shell
+pip install /PACKAGE_PATH/stat-drops
 ```
 
 ## Module Codebase

@@ -25,17 +25,19 @@ from sqlalchemy import create_engine
 from tqdm import tqdm
 import time
 
+
 class DBOpts(object):
     """
     This class contains the operations for the .db file with sqlite3 and pandas
     CHOOSE argument of the self-defined functions correctly.
     """
+
     def __init__(self, folder, file_in, file_out=None):
         super(DBOpts, self).__init__()
         self.folder = folder
         self.file_in = file_in
-        self.file_out = file_out #file name that you wanna generate, default is None
-        
+        self.file_out = file_out  # file name that you wanna generate, default is None
+
     def chunker(self, seq, size):
         '''the chunker for tqdm processing bar from http://stackoverflow.com/a/434328'''
         return (seq[pos:pos + size] for pos in range(0, len(seq), size))
@@ -56,26 +58,26 @@ class DBOpts(object):
         pd_sql = pd.read_sql(query, con)
         pd_sql[col].to_csv(self.folder + table + '_' + col + '.csv', index=False)
         con.close()
-    
+
     def edit_sql_col(self, query):
         '''ONLY specific with this type of error. Split OK, 0000.00 and fix them all'''
         starttime = time.time()
 
-        con = sqlite3.connect(self.folder+self.file_in)
+        con = sqlite3.connect(self.folder + self.file_in)
         col = pd.read_sql(query, con)
 
         temp = col['datalogger_voltage'].str.split(",", n=1, expand=True)
 
         col['datalogger_voltage'] = temp[0]
-        col['rain_accumulated_32_bit'] = col['rain_intensity_32_bit']  
+        col['rain_accumulated_32_bit'] = col['rain_intensity_32_bit']
         col['rain_intensity_32_bit'] = temp[1]
 
         con.close()
         endtime = time.time()
-        print ('Editing is finished! {} seconds used. Now conversion starting'.format(endtime-starttime))
-        
+        print('Editing is finished! {} seconds used. Now conversion starting'.format(endtime - starttime))
+
         return col  # return DataFrame
-    
+
     def convert_DataFrame_to_db(self, table, df):
         #########################################################################
         # This one seems safer than convert_DataFrame_to_db_with_processbar.    #
@@ -88,7 +90,7 @@ class DBOpts(object):
         engine = create_engine(db_name, echo=False)
         connection = engine.raw_connection()
         df.to_sql(table, con=connection, index=False)
-        
+
     def convert_DataFrame_to_db_with_processbar(self, table, df):
         '''df: DataFrame
         db_name: 'sqlite:///YourNewDatabaseName.db'
@@ -101,9 +103,9 @@ class DBOpts(object):
         db_name = 'sqlite:///' + self.folder + self.file_out
         engine = create_engine(db_name, echo=False)
         connection = engine.raw_connection()
-        
-        chunksize = int(len(df) / 10) # 10%
-        
+
+        chunksize = int(len(df) / 10)  # 10%
+
         with tqdm(total=len(df), desc="coverting to .db file") as pbar:
             for i, cdf in enumerate(self.chunker(df, chunksize)):  # how to call function inside the class
                 replace = "replace" if i == 0 else "append"
@@ -118,10 +120,10 @@ class DBOpts(object):
         show first/last entry of THE TABLE: 'SELECT * FROM {0} WHERE rowid = (SELECT MIN/MAX(rowid) FROM {0})'.format(THE TABLE)
         Without reading the data through pandas
         '''
-        
-        con = sqlite3.connect(self.folder+self.file_in)
+
+        con = sqlite3.connect(self.folder + self.file_in)
         c = con.cursor()
-        
+
         try:
             c.execute(query)
             response = c.fetchall()
@@ -131,7 +133,7 @@ class DBOpts(object):
         finally:
             c.close()
             con.close()
-            
+
         return response, desc
 
     def brief_check(self, query):
@@ -141,6 +143,7 @@ class DBOpts(object):
         con.close()
 
         return col
+
 
 if __name__ == '__main__':
     '''Aim to show the basic info of the database (tables, columns, and rows). 
@@ -183,4 +186,3 @@ if __name__ == '__main__':
         # table = ('station_40',) so use table[0] here otherwise table is a tuple not a string
         temp = opts.edit_sql_col(query3)
         opts.convert_DataFrame_to_db_with_processbar(table[0], temp)
-
